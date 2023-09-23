@@ -1,18 +1,55 @@
 import { createSlice } from '@reduxjs/toolkit';
-const contactBaz = [];
-const slice = createSlice({
+import { fetchContacts, addContact, deleteContact } from './accountFetch';
+
+const fetchingInProgress = state => {
+  state.isLoading = true;
+};
+const fetchingSuccess = (state, action) => {
+  state.isLoading = false;
+  state.error = null;
+  state.items = action.payload;
+};
+const fetchingError = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
+const deleteContacts = (state, action) => {
+  state.isLoading = false;
+  state.error = null;
+  const index = state.items.findIndex(
+    contact => contact.id === action.payload.id
+  );
+  state.items.splice(index, 1);
+};
+const addFulfilled = (state, action) => {
+  state.isLoading = false;
+  state.items.push(action.payload);
+  state.error = null;
+};
+
+const contactsInitialState = {
+  items: [],
+  isLoading: false,
+  error: null,
+};
+
+const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: contactBaz,
-  reducers: {
-    addContacts(state, action) {
-      state.push(action.payload);
-    },
-    deleteContacts(state, action) {
-      const index = state.findIndex(state => state.id === action.payload);
-      state.splice(index, 1);
-    },
+  initialState: contactsInitialState,
+  extraReducers: builder => {
+    builder
+      .addCase(fetchContacts.pending, fetchingInProgress)
+      .addCase(fetchContacts.fulfilled, fetchingSuccess)
+      .addCase(fetchContacts.rejected, fetchingError)
+      .addCase(addContact.pending, fetchingInProgress)
+      .addCase(addContact.fulfilled, addFulfilled)
+      .addCase(addContact.rejected, fetchingError)
+      .addCase(deleteContact.pending, fetchingInProgress)
+      .addCase(deleteContact.fulfilled, deleteContacts)
+      .addCase(deleteContact.rejected, fetchingError);
   },
 });
 
-export const contactsReducer = slice.reducer;
-export const { addContacts, deleteContacts } = slice.actions;
+// export const { fetchingInProgress, fetchingSuccess, fetchingError } =
+//   contactsSlice.actions;
+export const contactsReducer = contactsSlice.reducer;
