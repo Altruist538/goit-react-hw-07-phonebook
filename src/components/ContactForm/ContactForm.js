@@ -1,6 +1,5 @@
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-// import { nanoid } from 'nanoid';
 import {
   StyledForm,
   StyledField,
@@ -9,6 +8,7 @@ import {
 } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'redux/accountFetch';
+import { getItems } from 'redux/selectors';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().min(2).max(50).required('* Name is required'),
@@ -19,7 +19,7 @@ const validationSchema = Yup.object().shape({
 });
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.items);
+  const contacts = useSelector(getItems);
   return (
     <>
       <Formik

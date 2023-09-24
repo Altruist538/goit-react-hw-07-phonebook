@@ -1,16 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { List, ListItem, Button } from './ContactList.styled';
-
 import { fetchContacts, deleteContact } from 'redux/accountFetch';
-
+import { selectVisibleContacts } from 'redux/selectors';
+import { useEffect } from 'react';
 export const ContactList = () => {
-  const contacts = useSelector(state => state.contacts.items);
-  const filter = useSelector(state => state.filters);
   const dispatch = useDispatch();
-  const visibleQuizItems = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
-  // const visibleQuizItems = contacts.items;
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+  const visibleQuizItems = useSelector(selectVisibleContacts);
   return (
     <>
       <List>
