@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { FilterInput, Label, Wrapper } from './Filter.styled';
 import { setFilter } from 'redux/filterSlice';
-import { getStatusFilter } from 'redux/selectors';
+import { selectStatusFilter } from 'redux/selectors';
 export const Filter = () => {
   const dispatch = useDispatch();
-  const filters = useSelector(getStatusFilter);
+  const filters = useSelector(selectStatusFilter);
   return (
     <Wrapper>
       <Label>Find contacts by name</Label>
